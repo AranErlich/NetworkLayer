@@ -8,7 +8,7 @@ import Foundation
 
 public protocol NetworkTarget {
     var headerParams: [String: String]? { get }
-    var queryParams: [String: Any] { get }
+    var queryParams: [String: String]? { get }
     var body: Codable? { get }
     var baseURL: URL { get }
     var apiMethod: HTTPMethod { get }
@@ -25,8 +25,8 @@ public extension NetworkTarget {
         return nil
     }
 
-    var queryParams: [String: Any] {
-        return [:]
+    var queryParams: [String: String]? {
+        return nil
     }
     
     var apiMethod: HTTPMethod {
@@ -75,6 +75,16 @@ public extension NetworkTarget {
                 request.addValue(value, forHTTPHeaderField: key)
             }
         }
+        
+        if let queryParams = queryParams {
+            var params: [URLQueryItem] = []
+            queryParams.forEach { (key, value) in
+                let qItem = URLQueryItem(name: key, value: value)
+                params.append(qItem)
+            }
+            
+            request.url?.append(queryItems: params)
+        }
 
         switch apiMethod {
         case .post, .put, .delete, .patch, .options:
@@ -97,11 +107,11 @@ public extension NetworkTarget {
 // MARK: - perform request extension
 extension NetworkTarget {
     
-    func execute<response: Codable, error: Error>(_ completion: @escaping (Result<response, error>) -> Void) {
+    func execute<response: Codable>(_ completion: @escaping (Result<response, Error>) -> Void) {
         return NetworkGateway.execute(target: self, completion: completion)
     }
     
-    func execute<response: Codable, error: Error>(response: response.Type, error: error.Type) async -> Result<response, error> {
+    func execute<response: Codable>(response: response.Type) async -> Result<response, Error> {
         return await NetworkGateway.execute(target: self)
     }
     

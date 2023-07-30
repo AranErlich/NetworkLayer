@@ -15,7 +15,7 @@ extension NetworkGateway {
     ///     - NetworkTarget
     /// - Return:
     ///     - await response with generic result
-    static func request<response: Codable, error: Error>(target: NetworkTarget) async -> Result<response, error> {
+    static func request<response: Codable>(target: NetworkTarget) async -> Result<response, Error> {
         // Mock Task
         if target.mock, let url = target.urlRequest.url {
             do {
@@ -23,7 +23,7 @@ extension NetworkGateway {
                 
                 return Self.parseData(data: data)
             } catch {
-                return .failure(NetworkError.status(.noContent) as! error)
+                return .failure(NetworkError.status(.noContent))
             }
         }
         
@@ -32,32 +32,32 @@ extension NetworkGateway {
     
     // MARK: - helpers
     
-    private static func dataRequest<response: Codable, error: Error>(urlRequest: URLRequest) async -> Result<response, error> {
+    private static func dataRequest<response: Codable>(urlRequest: URLRequest) async -> Result<response, Error> {
         do {
             let (data, response) = try await URLSession.shared.data(for: urlRequest)
             
             // TODO: - need to debug
-            if let error = Self.parseErrorIfNeeded(response: response, data: data, e: error.self) {
+            if let error = Self.parseErrorIfNeeded(response: response, data: data) {
                 return .failure(error)
             }
 
             // check for error regardless 200 ok
             return Self.parseData(data: data)
         } catch let error {
-            return .failure(NetworkError.underlying(error) as! error)
+            return .failure(NetworkError.underlying(error))
         }
     }
     
-    private static func parseErrorIfNeeded<error: Error>(response: URLResponse, data: Data, e: error.Type) -> error? {
+    private static func parseErrorIfNeeded(response: URLResponse, data: Data) -> Error? {
         let httpResponse = response as? HTTPURLResponse
         let statusCode = httpResponse?.statusCode ?? 0
         
         // check status code before internal error check
         guard 200 ... 299 ~= statusCode else {
             if statusCode == StatusCode.unauthorized.rawValue {
-                return NetworkError.status(.unauthorized) as? error
+                return NetworkError.status(.unauthorized)
             } else if let sc = StatusCode(rawValue: statusCode) {
-                return NetworkError.status(sc) as? error
+                return NetworkError.status(sc)
             } else {
                 return nil
             }
@@ -66,10 +66,10 @@ extension NetworkGateway {
         return nil
     }
     
-    private static func parseData<response: Codable, error: Error>(data: Data) -> Result<response, error> {
-        guard let res = NetworkDataParser<response, error>(data: data)?.result() else {
+    private static func parseData<response: Codable>(data: Data) -> Result<response, Error> {
+        guard let res = NetworkDataParser<response>(data: data)?.result() else {
             let networkError = NetworkError.status(.noContent)
-            return .failure(networkError as! error)
+            return .failure(networkError)
         }
         
         return res

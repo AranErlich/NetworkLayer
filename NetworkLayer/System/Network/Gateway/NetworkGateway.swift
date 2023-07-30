@@ -10,11 +10,11 @@ class NetworkGateway {
     
     // MARK: - Public functions
     
-    static func execute<response: Codable, error: Error> (target: NetworkTarget, completion: @escaping (Result<response, error>) -> Void) {
+    static func execute<response: Codable> (target: NetworkTarget, completion: @escaping (Result<response, Error>) -> Void) {
         request(target: target, completion: completion)
     }
     
-    static func execute<response: Codable, error: Error> (target: NetworkTarget) async -> Result<response, error> {
+    static func execute<response: Codable> (target: NetworkTarget) async -> Result<response, Error> {
         return await request(target: target)
     }
     

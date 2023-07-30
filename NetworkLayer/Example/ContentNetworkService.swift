@@ -25,7 +25,7 @@ class ContentNetworkService: NetworkTarget, ContentNetworkServiceProtocol {
     func auth(model: ContentModel) async {
         body = model
         target = "some/auth/routing" // 🤷‍♂️
-        _  = await execute(response: ContentModel.self, error: NetworkError.self)
+        _  = await execute(response: ContentModel.self)
         
 //        return try? result.get()
     }

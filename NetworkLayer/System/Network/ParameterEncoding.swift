@@ -7,20 +7,6 @@
 
 import Foundation
 
-/// HTTP method definitions.
-
-public enum HTTPMethod: String {
-    case options = "OPTIONS"
-    case get     = "GET"
-    case head    = "HEAD"
-    case post    = "POST"
-    case put     = "PUT"
-    case patch   = "PATCH"
-    case delete  = "DELETE"
-    case trace   = "TRACE"
-    case connect = "CONNECT"
-}
-
 /// Defines whether the url-encoded query string is applied to the existing query string or HTTP body of the
 /// resulting URL request.
 ///
@@ -129,8 +115,8 @@ public struct JSONEncoding: ParameterEncoding {
             }
 
             urlRequest.httpBody = data
-        } catch {
-            throw AppError.jsonEncodingFailed(error: error)
+        } catch let error {
+            throw error
         }
 
         return urlRequest
@@ -157,8 +143,8 @@ public struct JSONEncoding: ParameterEncoding {
             }
 
             urlRequest.httpBody = data
-        } catch {
-            throw AppError.jsonEncodingFailed(error: error)
+        } catch let error {
+            throw error
         }
 
         return urlRequest
@@ -270,7 +256,7 @@ struct URLEncoding: ParameterEncoding {
 
         if let method = HTTPMethod(rawValue: urlRequest.httpMethod ?? "GET"), encodesParametersInURL(with: method) {
             guard let url = urlRequest.url else {
-                throw AppError.wrongURL
+                throw NetworkError.status(.badGateway)
             }
 
             if var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false), !parameters.isEmpty {

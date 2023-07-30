@@ -6,11 +6,11 @@
 
 import Foundation
 
-class NetworkDataParser<T:Codable, error: Error> {
+class NetworkDataParser<T:Codable> {
     
     private var data: Data
     private var object: T?
-    private var err: error?
+    private var err: NetworkError?
     
     init?(data: Data) {
         guard let response = try? NetworkResponse<T>.parse(data: data) else { return nil }
@@ -20,11 +20,11 @@ class NetworkDataParser<T:Codable, error: Error> {
             object = validData
         } else {
             let networkError: NetworkError = .status(.noContent)
-            err = (networkError as! error)
+            err = networkError
         }
     }
     
-    func result() -> Result<T,error> {
+    func result() -> Result<T, Error> {
         if let error = err {
             return .failure(error)
         } else if let object = self.object {
