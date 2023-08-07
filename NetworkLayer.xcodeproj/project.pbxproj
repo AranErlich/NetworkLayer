@@ -130,10 +130,10 @@
 				A6506C182889AA0D009CBB9F /* Parser */,
 				A6E0752A285B0F3700CF3A68 /* Extensions */,
 				A6E07532285B0FC900CF3A68 /* Environments.swift */,
-				A6E0751F285B0E9E00CF3A68 /* NetworkTarget.swift */,
-				A6E07520285B0E9E00CF3A68 /* NetworkError.swift */,
 				A6E0751B285B0E9E00CF3A68 /* StatusCode.swift */,
+				A6E0751F285B0E9E00CF3A68 /* NetworkTarget.swift */,
 				A6506C0D28897A08009CBB9F /* HTTPMethod.swift */,
+				A6E07520285B0E9E00CF3A68 /* NetworkError.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -141,11 +141,11 @@
 		A6E0752A285B0F3700CF3A68 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				A6E0753E285B180B00CF3A68 /* CodableExtension.swift */,
-				A6E0752B285B0F4100CF3A68 /* DecodableExtension.swift */,
 				A6E0753F285B180B00CF3A68 /* DataExtension.swift */,
 				A6E07536285B106900CF3A68 /* DispatchQueueExtension.swift */,
+				A6E0753E285B180B00CF3A68 /* CodableExtension.swift */,
 				A6506C0F28897D50009CBB9F /* ErrorExtension.swift */,
+				A6E0752B285B0F4100CF3A68 /* DecodableExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";

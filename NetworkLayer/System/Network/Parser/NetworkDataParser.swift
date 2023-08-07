@@ -13,15 +13,14 @@ class NetworkDataParser<T:Codable> {
     private var err: NetworkError?
     
     init?(data: Data) {
-        guard let response = try? NetworkResponse<T>.parse(data: data) else { return nil }
-        self.data = data
-        
-        if let validData = response.data {
-            object = validData
+        if let response = try? T.parse(data: data) {
+            object = response
         } else {
             let networkError: NetworkError = .status(.noContent)
             err = networkError
         }
+        
+        self.data = data
     }
     
     func result() -> Result<T, Error> {

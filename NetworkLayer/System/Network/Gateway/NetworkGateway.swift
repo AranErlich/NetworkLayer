@@ -18,6 +18,22 @@ class NetworkGateway {
         return await request(target: target)
     }
     
+    static func getImageData(from url: URL) async -> Data? {
+        let config = URLSessionConfiguration.default
+        config.requestCachePolicy = .returnCacheDataElseLoad
+        let urlSession = URLSession(configuration: config)
+        
+        do {
+            let (data, _) = try await urlSession.data(from: url)
+            
+            return data
+        } catch let error {
+            print(error)
+            
+            return nil
+        }
+    }
+    
     // MARK: - helpers
     
     static func getMockData(url: URL) throws -> Data {
